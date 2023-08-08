@@ -1,22 +1,23 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
-const Map = ({ location }) => {
-  const position = [location.lat, location.lng];
+function Map({ location }) {
+  const { lat, lng } = location;
+
 
   return (
-    <MapContainer center={position} zoom={13} style={{ height: '600px', width: '100%',zIndex:5}}>
+    <MapContainer
+      className='z-10 overflow-hidden'
+      center={[51.505, -0.09]} zoom={13} style={{ width: '100%', height: '550px' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution='&copy; OpenStreetMap contributors'
       />
-      {location.lat !== 0 && (
-        <Marker position={position}>
-          <Popup>{`IP Address: ${location.ip}`}</Popup>
-        </Marker>
-      )}
+      <Marker position={[lat, lng]}>
+        <Popup>A marker at (51.5, -0.09)</Popup>
+      </Marker>
     </MapContainer>
   );
-};
+}
 
 export default Map;
