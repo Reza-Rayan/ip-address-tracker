@@ -4,6 +4,7 @@ import axios from 'axios';
 const AddressInfo = ({ ipAddress }) => {
   const [addressData, setAddressData] = useState(null);
 
+
   useEffect(() => {
     if (ipAddress) {
       axios
@@ -13,12 +14,13 @@ const AddressInfo = ({ ipAddress }) => {
         })
         .catch(error => {
           console.error('Error fetching address data:', error);
+         
         });
     }
   }, [ipAddress]);
 
   return (
-    <div className='container mx-auto z-50'>
+    <div className='container mx-auto z-50 '>
       {addressData && (
         <div className=' bg-white grid relative mb-[-80px] mt-6
         grid-cols-1 md:grid-cols-2 lg:grid-cols-4

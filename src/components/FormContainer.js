@@ -1,48 +1,66 @@
-import React, { useState } from 'react'
-import axios from 'axios';
-// import component
+import React from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import AddressInfo from './AddressInfo';
 
 const FormContainer = ({ onLocationChange }) => {
-  const [ipAddress, setIpAddress] = useState('');
+  const initialValues = {
+    ipAddress: '',
+  };
 
-  const handleSearch = () => {
-    if (ipAddress) {
-      axios
-        .get(`https://geo.ipify.org/api/v1?apiKey=YOUR_API_KEY&ipAddress=${ipAddress}`)
-        .then(response => {
-          const { location } = response.data;
-          // Call the onLocationChange function with the location data
-          onLocationChange({ lat: location.lat, lng: location.lng, ip: location.ip });
-        })
-        .catch(error => {
-          console.error('Error fetching address data:', error);
-        });
+  const validationSchema = Yup.object({
+    ipAddress: Yup.string()
+      .required('IP Address is required')
+      .matches(
+        // Regular expression to match IP address format
+        /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/,
+        'Invalid IP Address format'
+      ),
+  });
+
+  const onSubmit = async (values) => {
+    try {
+      const response = await fetch(`https://geo.ipify.org/api/v2/country?apiKey=at_MBVm41xOSstE6zRui3oPA9LVhXrHa&ipAddress=${values.ipAddress}`);
+      const data = await response.json();
+      const { location } = data;
+      onLocationChange({ lat: location.lat, lng: location.lng, ip: location.ip });
+    } catch (err) {
+      console.error('Error fetching address data:', err);
     }
   };
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit,
+  });
+
   return (
     <>
-      <div className='w-[80%] my-4 appShadow lg:w-[555px] mx-auto bg-white overflow-hidden rounded-[15px] flex '>
-        <input
-          className='text-[#2C2C2C] text-[12px] md:text-[18px] bg-transparent p-3 w-full'
-          type="text"
-          placeholder="Search for any IP address or domain"
-          value={ipAddress}
-          onChange={(e) => setIpAddress(e.target.value)}
-        />
-        <button onClick={handleSearch} className='bg-black p-3
-                hover:bg-[#3F3F3F] transition-all'>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-
-        </button>
-
-
+      <div className='w-[80%] appShadow lg:w-[555px] mx-auto bg-white overflow-hidden rounded-[15px] flex '>
+        <form onSubmit={formik.handleSubmit} className="flex w-full">
+          <input
+            className={`text-[#2C2C2C] text-[12px] md:text-[18px] bg-transparent p-3 w-full ${formik.touched.ipAddress && formik.errors.ipAddress ? 'border-red-500' : ''}`}
+            type="text"
+            placeholder="Search for any IP address or domain"
+            name="ipAddress"
+            value={formik.values.ipAddress}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          <button type="submit" className='bg-black p-3 hover:bg-[#3F3F3F] transition-all'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </form>
       </div>
-      <AddressInfo ipAddress={ipAddress} />
+      {formik.touched.ipAddress && formik.errors.ipAddress ? (
+        <p className='text-red-500 text-[18px] font-medium text-center mt-2'>{formik.errors.ipAddress}</p>
+      ) : null}
+      <AddressInfo ipAddress={formik.values.ipAddress} />
     </>
-  )
-}
+  );
+};
 
-export default FormContainer
+export default FormContainer;
