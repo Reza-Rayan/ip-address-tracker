@@ -20,9 +20,10 @@ const FormContainer = ({ onLocationChange }) => {
 
   const onSubmit = async (values) => {
     try {
-      const response = await fetch(`https://geo.ipify.org/api/v2/country?apiKey=at_MBVm41xOSstE6zRui3oPA9LVhXrHa&ipAddress=${values.ipAddress}`);
-      const data = await response.json();
-      const { location } = data;
+      const response = await
+       fetch
+       (`https://geo.ipify.org/api/v2/country,city?apiKey=at_MBVm41xOSstE6zRui3oPA9LVhXrHa&ipAddress=${values.ipAddress}`);
+      const { location } = await response.json();
       onLocationChange({ lat: location.lat, lng: location.lng, ip: location.ip });
     } catch (err) {
       console.error('Error fetching address data:', err);
