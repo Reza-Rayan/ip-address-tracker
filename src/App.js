@@ -5,8 +5,8 @@ import FormContainer from './components/FormContainer';
 
 function App() {
   const [location, setLocation] = useState({
-    lat: 0,
-    lng: 0,
+    lat: 51.505,
+    lng: -0.09,
     ip: '',
   });
 
