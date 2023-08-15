@@ -15,15 +15,16 @@ function Map({ location }) {
   useEffect(() => {
     //check view
     if (mapRef.current) {
-      mapRef.current.setView(position, 12);
+      mapRef.current.setView(position, 20);
     }
   }, [position]);
 
+
   const customIcon = L.icon({
-    iconUrl: '/path/to/icon.png',
-    iconSize: [50, 50], // specify the size of the icon
-    // Other icon options like iconAnchor, popupAnchor, etc.
-  })
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconSize: [40, 60], // e.g., [32, 32]
+    // Other icon options
+  });
 
   return (
     <MapContainer
@@ -37,7 +38,6 @@ function Map({ location }) {
       />
 
       <Marker position={position} icon={customIcon}>
-        <Popup>You are here: ({position[0]}, {position[1]})</Popup>
       </Marker>
     </MapContainer >
   );
