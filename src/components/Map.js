@@ -1,28 +1,45 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useRef, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+
+// ...
+
 
 function Map({ location }) {
   const { lat, lng } = location;
-  const initialPosition = [lat, lng];
-  const [position, setPosition] = useState(initialPosition);
+  const position = [lat, lng];
+
+  const mapRef = useRef(null);
 
   useEffect(() => {
-    setPosition([lat, lng]);
-  }, [lat, lng]);
+    //check view
+    if (mapRef.current) {
+      mapRef.current.setView(position, 12);
+    }
+  }, [position]);
 
+  const customIcon = L.icon({
+    iconUrl: '/path/to/icon.png',
+    iconSize: [50, 50], // specify the size of the icon
+    // Other icon options like iconAnchor, popupAnchor, etc.
+  })
 
   return (
     <MapContainer
+      ref={mapRef}
       className='z-10 '
-      center={position} zoom={13} style={{ width: '100%', height: '700px' }}>
+      center={position}
+      zoom={14} style={{ width: '100%', height: '720px' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; OpenStreetMap contributors'
       />
-      <Marker position={position}>
-        <Popup>A marker at ({position[0]}, {position[1]})</Popup>
+
+      <Marker position={position} icon={customIcon}>
+        <Popup>You are here: ({position[0]}, {position[1]})</Popup>
       </Marker>
-    </MapContainer>
+    </MapContainer >
   );
 }
 
