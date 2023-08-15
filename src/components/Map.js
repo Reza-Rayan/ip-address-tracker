@@ -30,11 +30,11 @@ function Map({ location }) {
     <MapContainer
       ref={mapRef}
       className='z-10 '
+      zoomControl={true}
       center={position}
       zoom={14} style={{ width: '100%', height: '720px' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; OpenStreetMap contributors'
       />
 
       <Marker position={position} icon={customIcon}>
